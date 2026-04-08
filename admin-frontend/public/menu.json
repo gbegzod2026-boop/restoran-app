@@ -1,0 +1,298 @@
+{
+  "categories": [
+    {
+      "id": "main",
+      "name": {
+        "uz": "Asosiy taomlar",
+        "ru": "Основные блюда",
+        "en": "Main dishes"
+      },
+      "sub": [
+        {
+          "key": "sub_meat",
+          "uz": "Go‘shtli taomlar",
+          "ru": "Мясные блюда",
+          "en": "Meat dishes"
+        },
+        {
+          "key": "sub_chicken",
+          "uz": "Parranda go‘shti",
+          "ru": "Блюда из птицы",
+          "en": "Poultry dishes"
+        },
+        {
+          "key": "sub_fish",
+          "uz": "Baliq va dengiz mahsulotlari",
+          "ru": "Рыба и морепродукты",
+          "en": "Fish and seafood"
+        },
+        {
+          "key": "sub_national",
+          "uz": "Milliy taomlar",
+          "ru": "Национальные блюда",
+          "en": "National dishes"
+        }
+      ]
+    },
+    {
+      "id": "snacks",
+      "name": {
+        "uz": "Gazaklar",
+        "ru": "Закуски",
+        "en": "Snacks"
+      },
+      "sub": [
+        {
+          "key": "sub_salads",
+          "uz": "Salatlar",
+          "ru": "Салаты",
+          "en": "Salads"
+        },
+        {
+          "key": "sub_small_snacks",
+          "uz": "Kichik porsiyali gazaklar",
+          "ru": "Небольшие закуски",
+          "en": "Small snacks"
+        },
+        {
+          "key": "sub_cold_snacks",
+          "uz": "Sovuq zakuskalar",
+          "ru": "Холодные закуски",
+          "en": "Cold snacks"
+        },
+        {
+          "key": "sub_hot_snacks",
+          "uz": "Issiq zakuskalar",
+          "ru": "Горячие закуски",
+          "en": "Hot snacks"
+        }
+      ]
+    },
+    {
+      "id": "soups",
+      "name": {
+        "uz": "Sho‘rvalar",
+        "ru": "Супы",
+        "en": "Soups"
+      },
+      "sub": [
+        {
+          "key": "sub_national_soups",
+          "uz": "Milliy sho‘rvalar",
+          "ru": "Национальные супы",
+          "en": "National soups"
+        },
+        {
+          "key": "sub_broths",
+          "uz": "Qaynatmalar",
+          "ru": "Бульоны",
+          "en": "Broths"
+        },
+        {
+          "key": "sub_cream_soups",
+          "uz": "Krem-sho‘rvalar",
+          "ru": "Крем-супы",
+          "en": "Cream soups"
+        }
+      ]
+    },
+    {
+      "id": "fastfood",
+      "name": {
+        "uz": "Fast-food",
+        "ru": "Фастфуд",
+        "en": "Fast food"
+      },
+      "sub": [
+        {
+          "key": "sub_burgers",
+          "uz": "Burgerlar",
+          "ru": "Бургеры",
+          "en": "Burgers"
+        },
+        {
+          "key": "sub_hotdog",
+          "uz": "Hotdog",
+          "ru": "Хот-доги",
+          "en": "Hot dogs"
+        },
+        {
+          "key": "sub_sandwich",
+          "uz": "Sendvichlar",
+          "ru": "Сэндвичи",
+          "en": "Sandwiches"
+        },
+        {
+          "key": "sub_shawarma",
+          "uz": "Shawarma / Doner",
+          "ru": "Шаурма / Донер",
+          "en": "Shawarma / Doner"
+        }
+      ]
+    },
+    {
+      "id": "garnish",
+      "name": {
+        "uz": "Garnirlar",
+        "ru": "Гарниры",
+        "en": "Side dishes"
+      },
+      "sub": [
+        {
+          "key": "sub_potato",
+          "uz": "Kartoshkali taomlar",
+          "ru": "Картофельные блюда",
+          "en": "Potato dishes"
+        },
+        {
+          "key": "sub_veggie_garnish",
+          "uz": "Sabzavotlardan garnir",
+          "ru": "Овощные гарниры",
+          "en": "Vegetable sides"
+        },
+        {
+          "key": "sub_rice_pasta",
+          "uz": "Guruch va makaron mahsulotlari",
+          "ru": "Рис и макаронные изделия",
+          "en": "Rice and pasta"
+        }
+      ]
+    },
+    {
+      "id": "drinks",
+      "name": {
+        "uz": "Ichimliklar",
+        "ru": "Напитки",
+        "en": "Drinks"
+      },
+      "sub": [
+        {
+          "key": "sub_hot_drinks",
+          "uz": "Issiq ichimliklar",
+          "ru": "Горячие напитки",
+          "en": "Hot drinks"
+        },
+        {
+          "key": "sub_cold_drinks",
+          "uz": "Sovuq ichimliklar",
+          "ru": "Холодные напитки",
+          "en": "Cold drinks"
+        },
+        {
+          "key": "sub_soda",
+          "uz": "Gazli ichimliklar",
+          "ru": "Газированные напитки",
+          "en": "Soda drinks"
+        },
+        {
+          "key": "sub_juices",
+          "uz": "Sharbatlar",
+          "ru": "Соки",
+          "en": "Juices"
+        }
+      ]
+    },
+    {
+      "id": "dessert",
+      "name": {
+        "uz": "Desertlar",
+        "ru": "Десерты",
+        "en": "Desserts"
+      },
+      "sub": [
+        {
+          "key": "sub_cakes",
+          "uz": "Tortlar",
+          "ru": "Торты",
+          "en": "Cakes"
+        },
+        {
+          "key": "sub_pastry",
+          "uz": "Pishiriqlar",
+          "ru": "Выпечка",
+          "en": "Pastries"
+        },
+        {
+          "key": "sub_icecream",
+          "uz": "Muzqaymoqlar",
+          "ru": "Мороженое",
+          "en": "Ice cream"
+        },
+        {
+          "key": "sub_sweets",
+          "uz": "Shirinliklar",
+          "ru": "Сладости",
+          "en": "Sweets"
+        }
+      ]
+    },
+    {
+      "id": "bread",
+      "name": {
+        "uz": "Non mahsulotlari",
+        "ru": "Хлебобулочные изделия",
+        "en": "Bread products"
+      },
+      "sub": [
+        {
+          "key": "sub_bread",
+          "uz": "Non",
+          "ru": "Хлеб",
+          "en": "Bread"
+        },
+        {
+          "key": "sub_lavash",
+          "uz": "Lavash",
+          "ru": "Лаваш",
+          "en": "Lavash"
+        },
+        {
+          "key": "sub_round_bread",
+          "uz": "Bochka nonlari",
+          "ru": "Круглый хлеб",
+          "en": "Round bread"
+        },
+        {
+          "key": "sub_baguette",
+          "uz": "Bagetlar",
+          "ru": "Багеты",
+          "en": "Baguettes"
+        }
+      ]
+    },
+    {
+      "id": "special",
+      "name": {
+        "uz": "Maxsus kategoriyalar",
+        "ru": "Специальные категории",
+        "en": "Special categories"
+      },
+      "sub": [
+        {
+          "key": "sub_kids",
+          "uz": "Bolalar menyusi",
+          "ru": "Детское меню",
+          "en": "Kids menu"
+        },
+        {
+          "key": "sub_diet",
+          "uz": "Parhez taomlar",
+          "ru": "Диетические блюда",
+          "en": "Diet dishes"
+        },
+        {
+          "key": "sub_vegan",
+          "uz": "Vegetarian / vegan taomlar",
+          "ru": "Вегетарианские / веганские блюда",
+          "en": "Vegetarian / vegan dishes"
+        },
+        {
+          "key": "sub_sport",
+          "uz": "Sportchilar uchun menyu",
+          "ru": "Меню для спортсменов",
+          "en": "Athlete menu"
+        }
+      ]
+    }
+  ]
+}

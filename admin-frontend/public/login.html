@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Foodify — Login</title>
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="icon" href="img/logo.png" type="image/png">
+</head>
+
+<body>
+
+  <div class="login-box">
+    <img src="img/logo.png" class="logo">
+
+    <!-- LOGIN TITLE -->
+    <h2 data-i18n="login_title"></h2>
+
+    <!-- LANGUAGE SELECT -->
+    <select id="langSelect" class="lang-select">
+      <option value="uz">🇺🇿 UZ</option>
+      <option value="ru">🇷🇺 RU</option>
+      <option value="en">🇬🇧 EN</option>
+    </select>
+
+    <!-- LOGIN / PASSWORD -->
+    <div id="authFields">
+  <div class="input-wrap">
+    <input id="username" type="text" data-i18n-placeholder="username">
+    <span class="input-icon">👤</span>
+  </div>
+
+  <div class="password-wrap">
+    <input id="password" type="password" data-i18n-placeholder="password">
+    <span id="togglePassword" class="eye">👁️</span>
+  </div>
+</div>
+
+    <!-- ROLE SELECT -->
+    <select id="role">
+      <option value="" data-i18n="select_role"></option>
+      <option value="client" data-i18n="client"></option>
+      <option value="admin" data-i18n="admin"></option>
+      <option value="chef" data-i18n="chef"></option>
+      <option value="waiter" data-i18n="waiter"></option>
+    </select>
+
+    <!-- BUTTONS -->
+    <button id="loginBtn" data-i18n="login"></button>
+    <button id="clientBtn" class="client-btn" data-i18n="enter_client"></button>
+    <p id="error"></p>
+  </div>
+
+  <script src="js/langs.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/login.js"></script>
+</body>
+
+</html>

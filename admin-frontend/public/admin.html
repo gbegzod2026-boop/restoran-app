@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Foodify — Admin</title>
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="icon" href="img/logo.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="img/logo.png" alt="Foodify Logo">
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="active"><span data-i18n="dashboard"></span></a>
+        <a href="#add"><span data-i18n="add_food_title"></span></a>
+        <a href="#report"><span data-i18n="view_report"></span></a>
+        <a href="#menu"><span data-i18n="menu_list"></span></a>
+        <a href="#orders"><span data-i18n="orders_list"></span></a>
+        <a href="#staff"><span data-i18n="staff_management"></span></a>
+        <a href="#crm"><span data-i18n="crm_nav"></span></a>
+        <a href="#reservations"><span data-i18n="reservations_nav"></span></a>
+        <a href="#feedback"><span data-i18n="feedback_nav"></span></a>
+        <a href="#notifications"><span data-i18n="notifications_nav"></span></a>
+        <a href="#roles"><span data-i18n="roles_nav"></span></a>
+        <a href="#audit-log"><span data-i18n="audit_nav"></span></a>
+        <a href="#settings"><span data-i18n="settings_nav"></span></a>
+        <a href="#tables"><span data-i18n="tables_nav"></span></a>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <header class="header">
+        <h1 data-i18n="admin_title">Admin Panel</h1>
+
+        <select id="langSelect">
+          <option value="uz">UZ</option>
+          <option value="ru">RU</option>
+          <option value="en">EN</option>
+        </select>
+
+        <button type="button" class="btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+          ⛶ <span id="fullscreenBtnText" data-i18n="fullscreen">To'liq ekran</span>
+        </button>
+      </header>
+
+
+      <section id="dashboard" class="admin-section active-section" style="display:block">
+        <div id="chefStats" class="stats-grid">
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_today_orders">Bugungi buyurtmalar</h4><b id="totalOrdersToday">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_active_orders">Faol buyurtmalar</h4><b id="activeOrders">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_today_revenue">Bugungi tushum</h4><b id="totalRevenue">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_active_chefs">Faol oshpazlar</h4><b id="activeChefsCount">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_active_waiters">Faol ofitsiantlar</h4><b id="activeWaitersCount">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_busy_free_tables">Band / bo'sh stol</h4>
+            <b><span id="busyTablesCount">0</span> / <span id="freeTablesCount">0</span></b>
+          </div>
+        </div>
+      </section>
+
+      <section id="crm" class="admin-section" style="display:none">
+        <h2>CRM</h2>
+        <div id="crmStats"></div>
+        <input type="text" id="customerSearch" data-i18n-placeholder="customer_phone"
+          placeholder="Mijoz ismi / telefon">
+        <div id="customerList"></div>
+      </section>
+
+      <section id="reservations" class="admin-section" style="display:none">
+        <h2 data-i18n="reservations_title">Bronlar</h2>
+        <div id="reservationStats"></div>
+        <div id="reservationFilters"></div>
+        <div id="reservationForm"></div>
+        <div id="reservationList"></div>
+      </section>
+
+      <section id="feedback" class="admin-section" style="display:none">
+        <h2 data-i18n="feedback_title">Fikrlar</h2>
+        <div id="feedbackStats"></div>
+        <div id="feedbackFilters"></div>
+        <div id="feedbackList"></div>
+      </section>
+
+      <section id="notifications" class="admin-section" style="display:none">
+        <h2 data-i18n="notifications_title">Bildirishnomalar</h2>
+        <div id="notificationsList"></div>
+      </section>
+
+      <section id="roles" class="admin-section" style="display:none">
+        <h2 data-i18n="roles_title">Roles & Permissions</h2>
+        <div id="rolesStats"></div>
+        <div class="form-grid">
+          <input type="text" id="rolesSearch" data-i18n-placeholder="search_role_user" placeholder="User qidirish..." />
+        </div>
+        <div id="rolesTemplates"></div>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="user_name_label">Ism</th>
+              <th data-i18n="user_role_label">Rol</th>
+              <th data-i18n="user_status_label">Holat</th>
+              <th data-i18n="permissions_title">Permissionlar</th>
+              <th data-i18n="actions_label">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="rolesUsersTable"></tbody>
+        </table>
+      </section>
+
+      <section id="audit-log" class="admin-section" style="display:none">
+        <h2 data-i18n="audit_title">Audit Log</h2>
+        <div id="auditStats"></div>
+        <div class="form-grid">
+          <input type="text" id="auditSearch" data-i18n-placeholder="search_audit"
+            placeholder="User, action yoki modul..." />
+          <select id="auditModuleFilter">
+            <option value="all" data-i18n="audit_module_all">Barcha modullar</option>
+            <option value="orders" data-i18n="permission_orders">Buyurtmalar</option>
+            <option value="menu" data-i18n="permission_menu">Menu</option>
+            <option value="tables" data-i18n="permission_tables">Stollar</option>
+            <option value="staff" data-i18n="permission_staff">Personal</option>
+            <option value="customers" data-i18n="permission_customers">Mijozlar</option>
+            <option value="roles" data-i18n="permission_roles">Rollar</option>
+            <option value="system" data-i18n="notification_type_system">System</option>
+          </select>
+          <select id="auditSeverityFilter">
+            <option value="all" data-i18n="audit_severity_all">Barcha darajalar</option>
+            <option value="info" data-i18n="audit_severity_info">Info</option>
+            <option value="warning" data-i18n="audit_severity_warning">Warning</option>
+            <option value="critical" data-i18n="audit_severity_critical">Critical</option>
+          </select>
+        </div>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="date_label">Sana</th>
+              <th data-i18n="user_name_label">Foydalanuvchi</th>
+              <th data-i18n="audit_module">Modul</th>
+              <th data-i18n="audit_action">Action</th>
+              <th data-i18n="audit_target">Target</th>
+              <th data-i18n="audit_severity">Daraja</th>
+              <th data-i18n="actions_label">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="auditLogTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="settings" class="admin-section" style="display:none">
+        <h2 data-i18n="settings_title">Sozlamalar</h2>
+        <div id="settingsForm"></div>
+      </section>
+
+      <section id="tables" class="admin-section" style="display:none">
+        <h2 data-i18n="tables_title">Stollar</h2>
+        <div id="tablesStats"></div>
+        <div id="tablesGrid"></div>
+      </section>
+
+      <section id="add" class="admin-section" style="display:none">
+        <h2 data-i18n="add_food_title">Taom qo'shish</h2>
+        <div class="table-limit-box">
+          <label data-i18n="max_tables">Maksimal stollar soni:</label>
+          <input type="number" id="maxTablesInput" min="1">
+          <button onclick="saveMaxTable()" data-i18n="save_btn">Saqlash</button>
+        </div>
+        <div class="form-grid">
+          <input type="text" id="foodNameInput" data-i18n-placeholder="food_name" placeholder="Taom nomi" />
+          <input type="number" id="addPrice" data-i18n-placeholder="price" placeholder="Narxi" />
+          <input type="number" id="addPrepTime" data-i18n-placeholder="prep_time_placeholder" placeholder="Tayyorlanish vaqti (minut)" />
+          <input type="number" id="editPrepTime" data-i18n-placeholder="prep_time_placeholder" placeholder="Tayyorlanish vaqti (minut)">
+
+          <select id="category">
+            <option value="" data-i18n="select_category">Kategoriya tanlang</option>
+          </select>
+          <select id="subcategory">
+            <option value="" data-i18n="select_subcategory">Subkategoriya tanlang</option>
+          </select>
+
+          <label for="addImgInput" class="btn" data-i18n="choose_image">Rasm tanlash</label>
+          <input type="file" id="addImgInput" accept="image/*" hidden />
+          <span data-i18n-placeholder="file_not_selected" id="addFileName">Fayl tanlanmagan</span>
+
+          <button id="addMenuBtn" class="btn primary" data-i18n="add_btn">Qo'shish</button>
+        </div>
+      </section>
+
+      <section id="report" class="admin-section" style="display:none">
+        <h2 data-i18n="view_report_title">Hisobot</h2>
+
+        <h4 data-i18n="date_filter">Sana filteri</h4>
+        <div class="date-filter">
+          <select id="dateMode">
+            <option value="range" data-i18n="date_range">Oraliq</option>
+            <option value="day" data-i18n="date_day">Bugun</option>
+            <option value="month" data-i18n="date_month">Oy</option>
+          </select>
+          <input type="date" id="reportFrom" />
+          <input type="date" id="reportTo" />
+        </div>
+
+        <h4 data-i18n="payment_type">To'lov usuli</h4>
+        <div class="payment-filter">
+          <label><input type="checkbox" id="filterCash" checked /><span data-i18n="payment_cash">Naqd</span></label>
+          <label><input type="checkbox" id="filterPayme" checked /><span data-i18n="payment_payme">Payme</span></label>
+          <label><input type="checkbox" id="filterClick" checked /><span data-i18n="payment_click">Click</span></label>
+          <label><input type="checkbox" id="filterPaidOnly" /><span data-i18n="payment_paid_only">Faqat
+              to'langanlar</span></label>
+        </div>
+
+        <div class="form-grid">
+          <button class="btn primary" onclick="generateRangeReport()" data-i18n="view_report">Hisobotni ko'rish</button>
+          <button class="btn" onclick="downloadCSV()" data-i18n="download_csv">CSV yuklash</button>
+          <button class="btn" onclick="downloadExcel()" data-i18n="download_excel">Excel yuklash</button>
+        </div>
+
+        <h3 data-i18n="top_foods">Top taomlar</h3>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="number_sign">#</th>
+              <th data-i18n="food_name">Taom nomi</th>
+              <th data-i18n="sold_qty">Sotilgan</th>
+              <th data-i18n="total_sum">Jami summa</th>
+            </tr>
+          </thead>
+          <tbody id="topFoodsTable"></tbody>
+        </table>
+
+        <h4 style="margin-top: 20px; color: #dc3545;" data-i18n="least_sold_foods">📉 Eng kam sotilgan taomlar</h4>
+        <div class="table-container">
+          <table class="top-table">
+            <thead>
+              <tr>
+                <th data-i18n="number_sign">#</th>
+                <th data-i18n="food_name">Taom</th>
+                <th data-i18n="sold_qty">Sotilgan soni</th>
+                <th data-i18n="revenue">Tushum</th>
+              </tr>
+            </thead>
+            <tbody id="leastFoodsTable"></tbody>
+          </table>
+        </div>
+
+        <div id="paymentSummary" class="payment-summary"></div>
+
+        <div class="report-charts-header">
+          <h3 data-i18n="charts_title">Diagrammalar</h3>
+          <button class="btn refresh-btn" onclick="refreshReports()" data-i18n="refresh">🔄 Yangilash</button>
+        </div>
+
+        <div class="report-charts">
+          <div class="chart-box"><canvas id="ordersChart"></canvas></div>
+          <div class="chart-box"><canvas id="statusChart"></canvas></div>
+          <div class="chart-box"><canvas id="topFoodsChart"></canvas></div>
+        </div>
+
+        <div class="chart-actions">
+          <button class="btn" onclick="downloadChartPNG('topFoodsChart')" data-i18n="download_png">PNG yuklash</button>
+          <button class="btn" onclick="downloadChartPDF('topFoodsChart')" data-i18n="download_pdf">PDF yuklash</button>
+        </div>
+
+        <h3 data-i18n="category_sales">Kategoriya bo'yicha sotuv</h3>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="category">Kategoriya</th>
+              <th data-i18n="sold_qty">Sotilgan</th>
+              <th data-i18n="revenue">Daromad</th>
+            </tr>
+          </thead>
+          <tbody id="categorySalesTable"></tbody>
+        </table>
+
+        <div id="reportResult" class="report-result"></div>
+      </section>
+
+      <section id="menu" class="admin-section" style="display:none">
+        <div class="menu-header">
+          <h2 data-i18n="menu_list">Menyu</h2>
+          <input type="text" id="menuSearch" class="menu-search" data-i18n-placeholder="search_food"
+            placeholder="Taom qidirish..." />
+          <div class="menu-actions-top">
+            <button class="btn danger" onclick="deleteSelectedMenus()" data-i18n="delete_selected">Tanlanganlarni
+              o'chirish</button>
+            <button class="btn danger outline" onclick="deleteAllMenus()" data-i18n="delete_all">Hammasini
+              o'chirish</button>
+          </div>
+        </div>
+        <div id="menuList" class="menu-list"></div>
+      </section>
+
+      <section id="orders" class="admin-section" style="display:none">
+        <h2 data-i18n="orders_list">Buyurtmalar</h2>
+        <div class="orders-filters">
+          <select id="filterPaymentStatus">
+            <option value="all" data-i18n="all_payment_statuses">Barcha to'lov holatlari</option>
+            <option value="paid" data-i18n="status_paid">To'langan</option>
+            <option value="unpaid" data-i18n="status_unpaid">To'lanmagan</option>
+          </select>
+          <select id="filterPaymentType">
+            <option value="all" data-i18n="all_payment_methods"></option>
+            <option value="cash" data-i18n="cash_payment"></option>
+            <option value="payme">Payme</option>
+            <option value="click">Click</option>
+          </select>
+          <select id="filterOrderCategory">
+            <option value="all">Barcha kategoriyalar</option>
+          </select>
+          <select id="filterOrderSubcategory">
+            <option value="all">Barcha subkategoriyalar</option>
+          </select>
+          <select id="chefFilter">
+            <option value="all">Barcha oshpazlar</option>
+          </select>
+        </div>
+        <div id="ordersList" class="orders-list"></div>
+        <div class="orders-actions">
+          <button class="btn danger" onclick="deleteAllOrdersAndFreeTables()" data-i18n="delete_all_orders">Barcha
+            buyurtmalarni o'chirish</button>
+        </div>
+      </section>
+
+      <section id="staff" class="admin-section" style="display:none">
+        <h2 data-i18n="staff_management">Xodimlar boshqaruvi</h2>
+        <div class="staff-tabs">
+          <button onclick="showStaffTab('chef')" class="tab-btn active">👨‍🍳 <span
+              data-i18n="chefs">Oshpazlar</span></button>
+          <button onclick="showStaffTab('waiter')" class="tab-btn">🧑‍🍳 <span
+              data-i18n="waiters">Ofitsiantlar</span></button>
+        </div>
+
+        <div id="chefTab" class="staff-tab">
+          <div class="add-chef">
+            <input type="text" id="chefName" data-i18n-placeholder="chef_name" placeholder="Oshpaz ismi">
+            <input type="password" id="chefPassword" data-i18n-placeholder="chef_password" maxlength="4"
+              placeholder="Parol (4 raqam)">
+            <button onclick="addChef()" data-i18n="add_btn">Qo'shish</button>
+          </div>
+          <div id="chefList" class="staff-list"></div>
+        </div>
+
+        <div id="waiterTab" class="staff-tab" style="display:none">
+          <div class="add-waiter">
+            <input id="waiterName" data-i18n-placeholder="waiter_name" placeholder="Ofitsiant ismi">
+            <button onclick="addWaiter()" data-i18n="add_waiter">Qo'shish</button>
+          </div>
+          <div id="waiterList" class="staff-list"></div>
+        </div>
+      </section>
+
+      <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 data-i18n="edit_food_title">Taomni tahrirlash</h3>
+          <input type="text" id="editName" data-i18n-placeholder="food_name" placeholder="Taom nomi" />
+          <input type="number" id="editPrice" data-i18n-placeholder="price" placeholder="Narxi" />
+          <input type="number" id="editPrepTime" placeholder="Tayyorlanish vaqti (minut)">
+          <select id="editCategory">
+            <option value="">Kategoriya tanlang</option>
+          </select>
+          <select id="editSubCategory">
+            <option value="">Subkategoriya tanlang</option>
+          </select>
+          <label for="editImgInput" class="btn" data-i18n="choose_new_image">Yangi rasm tanlash</label>
+          <input type="file" id="editImgInput" accept="image/*" hidden />
+          <span id="editFileName" data-i18n="file_not_selected">Fayl tanlanmagan</span>
+          <div class="modal-actions">
+            <button class="btn primary" onclick="saveMenuItem()" data-i18n="save_btn">Saqlash</button>
+            <button class="btn" onclick="closeEditModal()" data-i18n="cancel_btn">Bekor qilish</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="roleModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="roleModalTitle" data-i18n="role_detail_title">Rol va permissionlar</h3>
+          <input type="text" id="roleUserName" disabled />
+          <select id="roleUserRole">
+            <option value="admin" data-i18n="role_admin">Admin</option>
+            <option value="manager" data-i18n="role_manager">Manager</option>
+            <option value="cashier" data-i18n="role_cashier">Cashier</option>
+            <option value="waiter" data-i18n="role_waiter">Waiter</option>
+            <option value="chef" data-i18n="role_chef">Chef</option>
+            <option value="client" data-i18n="role_client">Client</option>
+          </select>
+          <div id="rolePermissionsGrid" class="form-grid"></div>
+          <div class="modal-actions">
+            <button class="btn primary" onclick="saveRolePermissions()" data-i18n="save_btn">Saqlash</button>
+            <button class="btn" onclick="closeRoleModal()" data-i18n="cancel_btn">Bekor qilish</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="auditModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="auditModalTitle" data-i18n="audit_detail_title">Audit tafsilotlari</h3>
+          <div id="auditModalBody"></div>
+          <div class="modal-actions">
+            <button class="btn" onclick="closeAuditModal()" data-i18n="close">Yopish</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tableDetailModal" class="modal hidden"></div>
+
+      <div id="staffStatsModal" class="modal hidden">
+        <div class="modal-content">
+          <h2 data-i18n="staff_statistics">Xodimlar statistikasi</h2>
+          <div class="stats-controls">
+            <select id="statsPeriod">
+              <option value="today" data-i18n="today">Bugun</option>
+              <option value="week" data-i18n="week">Hafta</option>
+              <option value="month" data-i18n="month">Oy</option>
+            </select>
+            <button type="button" onclick="loadStaffStats()" data-i18n="view">Ko'rish</button>
+            <button type="button" onclick="closeStaffStats()" data-i18n="close">Yopish</button>
+          </div>
+          <div id="staffStatsContent"></div>
+          <div class="staff-charts">
+            <div class="chart-box"><canvas id="staffOrdersChart"></canvas></div>
+            <div class="chart-box"><canvas id="staffTimeChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="notification" class="notification"></div>
+  <div id="toast" class="toast"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/shared.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Foodify — Client</title>
+  <link rel="stylesheet" href="css/client.css?v=4">
+  <link rel="icon" href="img/logo.png" type="image/png">
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo">🍽️ Foodify</div>
+
+    <select id="langSelect" class="lang-select">
+      <option value="uz">UZ</option>
+      <option value="ru">RU</option>
+      <option value="en">EN</option>
+    </select>
+
+    <div class="filters">
+      <select id="filterCategory">
+        <option value="all" data-i18n="all_categories"></option>
+      </select>
+
+      <select id="filterSubcategory">
+        <option value="all" data-i18n="all_subcategories"></option>
+      </select>
+
+      <select id="filterType">
+        <option value="all" data-i18n="all_items"></option>
+        <option value="new" data-i18n="latest_foods"></option>
+        <option value="top" data-i18n="top_foods_badge"></option>
+      </select>
+
+      <input id="menuSearch" data-i18n-placeholder="search_food" />
+    </div>
+
+    <div class="header-ready-box" id="headerReadyBox">
+      <div class="header-ready-label" data-i18n="header_ready_title"></div>
+      <div class="header-ready-time" id="headerReadyTime">—</div>
+      <div class="header-ready-countdown" id="headerReadyCountdown"></div>
+    </div>
+
+    <div class="table-box">
+      <span data-i18n="table"></span>
+      <input type="number" id="tableInput" min="1" data-i18n-placeholder="table_number" />
+      <input type="tel" id="clientPhoneInput" placeholder="Telefon raqamingiz (+998...)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
+      <button id="tableCheckBtn" type="button" data-i18n="check_table"></button>
+      <span id="tableStatus" class="table-status-msg"></span>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 class="section-title" data-i18n="menu"></h2>
+    <div class="menu-grid" id="clientMenu"></div>
+  </main>
+
+  <div class="order-status-box" id="orderStatusBox" style="display:none;">
+    <span data-i18n="alerts.order_status"></span>
+    <b id="orderStatus">—</b>
+  </div>
+  <div class="cart-icon" id="cartIcon" onclick="toggleCart()">
+    <span class="cart-emoji">🛒</span>
+    <span id="cartCount" class="cart-badge">0</span>
+  </div>
+
+  <div id="cartModal" class="cart-modal">
+    <div class="cart-header">
+      <span><b data-i18n="alerts.cart_title">Savat</b></span>
+      <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+
+    <div id="cartItems" class="cart-items"></div>
+
+    <div class="cart-summary">
+      <div class="cart-total">
+        <span data-i18n="cart_total">Jami</span>
+        <b>
+          <span id="cartTotal">0</span>
+          <span data-i18n="currency">so‘m</span>
+        </b>
+      </div>
+      <button onclick="sendOrder()" data-i18n="order_button"></button>
+    </div>
+  </div>
+
+  <div id="paymentModal" class="payment-modal">
+    <div class="payment-card">
+      <h3 data-i18n="payment_title"></h3>
+      <div class="receipt-payment-info">
+        <p>
+          <b data-i18n="payment.order">Buyurtma:</b>
+          <span id="paymentOrderId"></span>
+        </p>
+      </div>
+      <div class="priority-box">
+        <label>
+          <input type="radio" name="priority" value="normal" checked>
+          <span data-i18n="priority_normal"></span>
+        </label>
+
+        <label id="fastOption" style="display:none">
+          <input type="radio" name="priority" value="fast">
+          <span data-i18n="priority_fast"></span>
+        </label>
+
+        <div id="priorityInfo" class="priority-info"></div>
+      </div>
+      <div id="paymentItems" class="payment-items"></div>
+      <div class="promo-section">
+        <div class="promo-title-small">
+          <span data-i18n="promo_label"></span>
+        </div>
+
+        <div class="promo-input-wrap">
+          <input id="cartPromoInput" data-i18n-placeholder="promo_example">
+          <button onclick="applyPromo()" data-i18n="apply_button"></button>
+        </div>
+      </div>
+      <div class="payment-total">
+        <div id="priceBreakdown"></div>
+        <div class="final-total">
+          <span data-i18n="cart_total"></span>
+          <b>
+            <span id="paymentTotal">0</span>
+            <span data-i18n="currency">so‘m</span>
+          </b>
+        </div>
+      </div>
+
+      <select id="paymentMethod">
+        <option value="cash" data-i18n="payment_cash"></option>
+        <option value="click" data-i18n="payment_click"></option>
+        <option value="payme" data-i18n="payment_payme"></option>
+      </select>
+      <span data-i18n="total_label"></span>
+      <div id="readyTimeText"></div>
+      <div id="clientReadyBox">
+        <p id="clientReadyTime"></p>
+        <p id="clientTimer"></p>
+      </div>
+      <button class="pay-btn" onclick="confirmPayment()">
+        <span data-i18n="payment.pay"></span>
+      </button>
+
+      <button class="close-btn" onclick="closePayment()">✖</button>
+    </div>
+  </div>
+
+  <div id="receiptBox" class="receipt-wrapper" style="display:none">
+    <div id="receiptContent" class="receipt-container"></div>
+
+    <div class="receipt-actions">
+      <button onclick="downloadReceiptPNG()" class="btn primary">
+        🖼 <span data-i18n="download_png"></span>
+      </button>
+
+      <button onclick="downloadReceiptPDF()" class="btn secondary">
+        📄 <span data-i18n="download_pdf"></span>
+      </button>
+    </div>
+  </div>
+
+  <button id="chatFab" class="chat-fab" type="button">💬</button>
+
+  <div id="clientChatModal" class="client-chat-modal" style="display:none;">
+    <div class="client-chat-card">
+      <div class="client-chat-header">
+        <strong>👨‍🍳 <span data-i18n="chef_chat_title">Oshpaz bilan chat</span></strong>
+        <button type="button" class="client-chat-close" onclick="closeClientChat()">✖</button>
+      </div>
+
+      <div id="clientChatInfo" class="client-chat-info" data-i18n="active_order_not_found">
+        Buyurtma topilmadi
+      </div>
+
+      <div id="clientChatMessages" class="client-chat-messages"></div>
+
+      <div class="client-chat-input-row">
+        <input id="clientChatInput" type="text" data-i18n-placeholder="write_message" placeholder="Xabar yozing..." />
+        <button id="clientChatSendBtn" type="button" data-i18n="send_message">
+          Yuborish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chefNote" class="chef-note"></div>
+  <div id="notification" class="notification"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/shared.js"></script>
+  <script type="module" src="js/client.js"></script>
+</body>
+
+</html>

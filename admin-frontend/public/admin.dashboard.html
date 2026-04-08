@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Foodify — Admin</title>
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="icon" href="img/logo.png" type="image/png" />
+
+  <style>
+    .dashboard-section { display:block; }
+    .dashboard-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+    .dashboard-subtitle { color:#6b7280; font-size:14px; margin:0; }
+    .dashboard-grid { display:grid; gap:14px; margin-bottom:16px; }
+    .dashboard-grid.metrics { grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); }
+    .dashboard-grid.blocks { grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); }
+    .dashboard-grid.charts { grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); }
+    .dashboard-grid.two-col { grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); }
+    .dashboard-panel, .metric-card, .status-block { background:#fff; border-radius:18px; padding:16px; box-shadow:0 10px 30px rgba(15,23,42,0.08); border:1px solid rgba(226,232,240,0.9); }
+    .metric-card { min-height:110px; display:flex; flex-direction:column; justify-content:space-between; }
+    .metric-label { color:#64748b; font-size:13px; margin-bottom:8px; }
+    .metric-value { font-size:28px; font-weight:700; color:#0f172a; line-height:1.1; }
+    .metric-sub { color:#475569; font-size:13px; margin-top:8px; }
+    .status-block { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .status-block .metric-value { font-size:26px; }
+    .status-badge { min-width:42px; min-height:42px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#fff; }
+    .status-badge.new { background:#3b82f6; }
+    .status-badge.cooking { background:#f59e0b; }
+    .status-badge.ready { background:#10b981; }
+    .status-badge.fast { background:#8b5cf6; }
+    .health-score-ring { width:88px; height:88px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-left:auto; color:#0f172a; font-weight:800; font-size:24px; background:conic-gradient(#22c55e 0deg, #22c55e var(--health-angle, 0deg), #e5e7eb var(--health-angle, 0deg), #e5e7eb 360deg); }
+    .health-score-ring span { width:64px; height:64px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; }
+    .dashboard-panel h3 { margin:0 0 12px; font-size:18px; color:#0f172a; }
+    .chart-shell { position:relative; min-height:280px; }
+    .feed-list, .risk-list { display:flex; flex-direction:column; gap:10px; max-height:360px; overflow:auto; }
+    .feed-item, .risk-item { border:1px solid #e2e8f0; border-radius:14px; padding:12px; background:#f8fafc; }
+    .feed-meta, .risk-meta { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:12px; color:#64748b; margin-top:6px; }
+    .risk-item.high { border-color:#fecaca; background:#fff1f2; }
+    .risk-item.medium { border-color:#fde68a; background:#fffbeb; }
+    .table-wrap { overflow:auto; }
+    .dashboard-table { width:100%; border-collapse:collapse; min-width:640px; }
+    .dashboard-table th, .dashboard-table td { padding:12px 10px; border-bottom:1px solid #e2e8f0; text-align:left; font-size:14px; }
+    .dashboard-table th { color:#475569; font-weight:600; background:#f8fafc; position:sticky; top:0; }
+    .status-pill { display:inline-flex; align-items:center; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:700; }
+    .status-pill.new { background:#dbeafe; color:#1d4ed8; }
+    .status-pill.cooking { background:#fef3c7; color:#b45309; }
+    .status-pill.ready { background:#d1fae5; color:#047857; }
+    .status-pill.closed { background:#e2e8f0; color:#334155; }
+    .status-pill.pending { background:#fee2e2; color:#b91c1c; }
+    .kpi-inline { display:flex; align-items:center; gap:12px; justify-content:space-between; }
+    .empty-state { color:#64748b; font-size:14px; padding:8px 0; }
+    @media (max-width: 768px) {
+      .metric-value { font-size:24px; }
+      .health-score-ring { margin:10px 0 0; }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="img/logo.png" alt="Foodify Logo">
+        <span>Foodify</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="active">📊 <span>Dashboard</span></a>
+        <a href="#add"><span data-i18n="add_food_title"></span></a>
+        <a href="#report"><span data-i18n="view_report"></span></a>
+        <a href="#menu"><span data-i18n="menu_list"></span></a>
+        <a href="#orders"><span data-i18n="orders_list"></span></a>
+        <a href="#staff"><span data-i18n="staff_management"></span></a>
+      </nav>
+    </aside>
+    <main class="content">
+
+      <header class="header">
+        <h1 data-i18n="admin_title"></h1>
+
+        <select id="langSelect">
+          <option value="uz">UZ</option>
+          <option value="ru">RU</option>
+          <option value="en">EN</option>
+        </select>
+
+        <button type="button" class="btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+          ⛶ <span id="fullscreenBtnText" data-i18n="fullscreen"></span>
+        </button>
+      </header>
+      <div id="chefStats"></div>
+
+      <section class="dashboard-section" id="dashboard">
+        <div class="dashboard-toolbar">
+          <div>
+            <h2>📊 Live Admin Dashboard</h2>
+            <p class="dashboard-subtitle">Revenue, payments, order flow, table activity va service pulse real-time overview.</p>
+          </div>
+          <button class="btn primary" type="button" onclick="refreshDashboard()">⟳ Refresh dashboard</button>
+        </div>
+
+        <div class="dashboard-grid metrics">
+          <div class="metric-card">
+            <div class="metric-label">Total revenue</div>
+            <div class="metric-value" id="dashboardTotalRevenue">0</div>
+            <div class="metric-sub">Today: <span id="totalRevenue">0</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Paid orders count</div>
+            <div class="metric-value" id="dashboardPaidOrdersCount">0</div>
+            <div class="metric-sub">Today's orders: <span id="totalOrdersToday">0</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Active tables count</div>
+            <div class="metric-value" id="dashboardActiveTablesCount">0</div>
+            <div class="metric-sub">Active orders: <span id="activeOrders">0</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Average order value</div>
+            <div class="metric-value" id="dashboardAverageOrderValue">0</div>
+            <div class="metric-sub">Paid revenue / paid orders</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Pending payments</div>
+            <div class="metric-value" id="dashboardPendingPaymentsCount">0</div>
+            <div class="metric-sub">Amount: <span id="dashboardPendingPaymentsAmount">0</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="kpi-inline">
+              <div>
+                <div class="metric-label">Average feedback rating</div>
+                <div class="metric-value" id="dashboardAverageFeedbackRating">0.0</div>
+                <div class="metric-sub">Based on order/feedback ratings</div>
+              </div>
+              <div class="health-score-ring" id="restaurantHealthRing" style="--health-angle:0deg;"><span id="dashboardRestaurantHealthScore">0</span></div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Delay risk detection</div>
+            <div class="metric-value" id="dashboardDelayRiskCount">0</div>
+            <div class="metric-sub">Orders above SLA threshold</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Restaurant health score</div>
+            <div class="metric-value" id="dashboardHealthText">0/100</div>
+            <div class="metric-sub">Composite ops score</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid blocks">
+          <div class="status-block">
+            <div>
+              <div class="metric-label">New orders</div>
+              <div class="metric-value" id="dashboardNewOrdersCount">0</div>
+            </div>
+            <span class="status-badge new">NEW</span>
+          </div>
+          <div class="status-block">
+            <div>
+              <div class="metric-label">Cooking orders</div>
+              <div class="metric-value" id="dashboardCookingOrdersCount">0</div>
+            </div>
+            <span class="status-badge cooking">HOT</span>
+          </div>
+          <div class="status-block">
+            <div>
+              <div class="metric-label">Ready orders</div>
+              <div class="metric-value" id="dashboardReadyOrdersCount">0</div>
+            </div>
+            <span class="status-badge ready">OK</span>
+          </div>
+          <div class="status-block">
+            <div>
+              <div class="metric-label">Fast orders</div>
+              <div class="metric-value" id="dashboardFastOrdersCount">0</div>
+            </div>
+            <span class="status-badge fast">FAST</span>
+          </div>
+        </div>
+
+        <div class="dashboard-grid charts">
+          <div class="dashboard-panel">
+            <h3>Payment method pie chart</h3>
+            <div class="chart-shell"><canvas id="paymentMethodPieChart"></canvas></div>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Hourly revenue chart</h3>
+            <div class="chart-shell"><canvas id="hourlyRevenueChart"></canvas></div>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Order status distribution</h3>
+            <div class="chart-shell"><canvas id="orderStatusDistributionChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid two-col">
+          <div class="dashboard-panel">
+            <h3>Delay risk detection</h3>
+            <div id="delayRiskList" class="risk-list"></div>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Live activity feed</h3>
+            <div id="liveActivityFeed" class="feed-list"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <h3>Recent orders table</h3>
+          <div class="table-wrap">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Table</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                  <th>Total</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <h3>Service pulse table overview</h3>
+          <div class="table-wrap">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Active workload</th>
+                  <th>Completed orders</th>
+                  <th>Avg cycle time</th>
+                </tr>
+              </thead>
+              <tbody id="servicePulseTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="add-card" id="add">
+        <h2 data-i18n="add_food_title"></h2>
+        <div class="table-limit-box">
+          <label data-i18n="max_tables"></label>
+          <input type="number" id="maxTablesInput" min="1">
+          <button onclick="saveMaxTable()" data-i18n="save_btn"></button>
+        </div>
+        <div class="form-grid">
+          <input type="text" id="foodNameInput" data-i18n-placeholder="food_name" />
+          <input type="number" id="addPrice" data-i18n-placeholder="price" />
+
+          <select id="category"></select>
+          <select id="subcategory"></select>
+
+          <label for="addImgInput" class="btn" data-i18n="choose_image"></label>
+          <input type="file" id="addImgInput" accept="image/*" hidden />
+          <span id="addFileName" data-i18n="file_not_selected"></span>
+
+          <button id="addMenuBtn" class="btn primary" data-i18n="add_btn"></button>
+        </div>
+      </section>
+      <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 data-i18n="edit_food_title"></h3>
+
+          <input type="text" id="editName" data-i18n-placeholder="food_name" />
+
+          <input type="number" id="editPrice" data-i18n-placeholder="price" />
+
+          <select id="editCategory"></select>
+          <select id="editSubCategory"></select>
+
+          <label for="editImgInput" class="btn" data-i18n="choose_new_image"></label>
+          <input type="file" id="editImgInput" accept="image/*" hidden />
+          <span id="editFileName" data-i18n="file_not_selected"></span>
+
+          <div class="modal-actions">
+            <button class="btn primary" onclick="saveMenuItem()" data-i18n="save_btn"></button>
+            <button class="btn" onclick="closeEditModal()" data-i18n="cancel_btn"></button>
+          </div>
+        </div>
+      </div>
+      <section class="report-section" id="report">
+        <h2 data-i18n="view_report_title"></h2>
+
+        <h4 data-i18n="date_filter"></h4>
+        <div class="date-filter">
+          <select id="dateMode">
+            <option value="range" data-i18n="date_range"></option>
+            <option value="day" data-i18n="date_day"></option>
+            <option value="month" data-i18n="date_month"></option>
+          </select>
+          <input type="date" id="reportFrom" />
+          <input type="date" id="reportTo" />
+        </div>
+
+        <h4 data-i18n="payment_type"></h4>
+        <div class="payment-filter">
+          <label>
+            <input type="checkbox" id="filterCash" checked />
+            <span data-i18n="payment_cash"></span>
+          </label>
+          <label>
+            <input type="checkbox" id="filterPayme" checked />
+            <span data-i18n="payment_payme"></span>
+          </label>
+          <label>
+            <input type="checkbox" id="filterClick" checked />
+            <span data-i18n="payment_click"></span>
+          </label>
+        </div>
+        <div class="form-grid">
+          <button class="btn primary" onclick="generateRangeReport()" data-i18n="view_report"></button>
+          <button class="btn" onclick="downloadCSV()" data-i18n="download_csv"></button>
+          <button class="btn" onclick="downloadExcel()" data-i18n="download_excel"></button>
+        </div>
+
+        <h3 data-i18n="top_foods"></h3>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="number_sign"></th>
+              <th data-i18n="food_name"></th>
+              <th data-i18n="sold_qty"></th>
+              <th data-i18n="total_sum"></th>
+            </tr>
+          </thead>
+          <tbody id="topFoodsTable"></tbody>
+        </table>
+
+        <div id="paymentSummary" class="payment-summary"></div>
+        <div class="report-charts-header">
+          <h3 data-i18n="charts_title"></h3>
+          <button class="btn refresh-btn" onclick="refreshReports()" data-i18n="refresh">
+            🔄
+          </button>
+        </div>
+        <div class="report-charts">
+          <div class="chart-box">
+            <canvas id="ordersChart"></canvas>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="statusChart"></canvas>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="topFoodsChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-actions">
+          <button class="btn" onclick="downloadChartPNG('topFoodsChart')" data-i18n="download_png"></button>
+          <button class="btn" onclick="downloadChartPDF('topFoodsChart')" data-i18n="download_pdf"></button>
+        </div>
+
+        <h3 data-i18n="category_sales"></h3>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="category"></th>
+              <th data-i18n="sold_qty"></th>
+              <th data-i18n="revenue"></th>
+            </tr>
+          </thead>
+          <tbody id="categorySalesTable"></tbody>
+        </table>
+
+        <div id="reportResult" class="report-result"></div>
+      </section>
+      <section class="menu-section" id="menu">
+        <div class="menu-header">
+          <h2 data-i18n="menu_list"></h2>
+          <input type="text" id="menuSearch" class="menu-search" data-i18n-placeholder="search_food" />
+
+          <div class="menu-actions-top">
+            <button class="btn danger" onclick="deleteSelectedMenus()" data-i18n="delete_selected"></button>
+            <button class="btn danger outline" onclick="deleteAllMenus()" data-i18n="delete_all"></button>
+          </div>
+        </div>
+        <div id="menuList" class="menu-list"></div>
+      </section>
+      <section class="orders-section" id="orders">
+        <h2 data-i18n="orders_list"></h2>
+        <div class="orders-filters">
+          <select id="filterPaymentStatus"></select>
+          <select id="filterOrderCategory"></select>
+          <select id="filterOrderSubcategory"></select>
+        </div>
+        <div id="ordersList" class="orders-list"></div>
+        <div class="orders-actions">
+          <button class="btn danger" onclick="deleteAllOrdersAndFreeTables()" data-i18n="delete_all_orders">
+          </button>
+        </div>
+      </section>
+      <section id="staff" class="staff-section">
+
+        <h2 data-i18n="staff_management"></h2>
+
+        <div class="staff-tabs">
+
+          <button onclick="showStaffTab('chef')" class="tab-btn active">
+            👨‍🍳 <span data-i18n="chefs"></span>
+          </button>
+
+          <button onclick="showStaffTab('waiter')" class="tab-btn">
+            🧑‍🍳 <span data-i18n="waiters"></span>
+          </button>
+
+        </div>
+
+        <div id="chefTab" class="staff-tab">
+
+          <div class="add-chef">
+            <input type="text" id="chefName" data-i18n-placeholder="chef_name">
+            <input type="password" id="chefPassword" data-i18n-placeholder="chef_password" maxlength="4">
+            <button onclick="addChef()" data-i18n="add_btn"></button>
+          </div>
+
+          <div id="chefList" class="staff-list"></div>
+
+        </div>
+
+        <div id="waiterTab" class="staff-tab" style="display:none">
+
+          <div class="add-waiter">
+            <input id="waiterName" data-i18n-placeholder="waiter_name">
+            <button onclick="addWaiter()" data-i18n="add_waiter"></button>
+          </div>
+
+          <div id="waiterList" class="staff-list"></div>
+
+        </div>
+        <div id="staffStatsModal" class="modal hidden">
+
+          <div class="modal-content">
+
+            <h2 data-i18n="staff_statistics"></h2>
+
+            <div class="stats-controls">
+              <select id="statsPeriod">
+                <option value="today" data-i18n="today"></option>
+                <option value="week" data-i18n="week"></option>
+                <option value="month" data-i18n="month"></option>
+              </select>
+
+              <button type="button" onclick="loadStaffStats()" data-i18n="view"></button>
+              <button type="button" onclick="closeStaffStats()" data-i18n="close"></button>
+            </div>
+
+            <div id="staffStatsContent"></div>
+
+            <div class="staff-charts">
+
+              <div class="chart-box">
+                <canvas id="staffOrdersChart"></canvas>
+              </div>
+
+              <div class="chart-box">
+                <canvas id="staffTimeChart"></canvas>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="notification" class="notification"></div>
+  <div id="toast" class="toast"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/shared.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/admin.dashboard.js"></script>
+</body>
+
+</html>

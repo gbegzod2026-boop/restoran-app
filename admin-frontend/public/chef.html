@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foodify — Chef</title>
+  <link rel="stylesheet" href="css/chef.css?v=123">
+  <link rel="icon" href="img/logo.png" />
+</head>
+
+<body>
+  <header class="chef-header">
+    <aside class="prep-sidebar">
+      <h3 data-i18n="prep_menu_title">🍽 Menyu va tayyor vaqt</h3>
+      <div id="prepMenuList"></div>
+    </aside>
+
+    <div class="header-left">
+      <h1 data-i18n="chef_page_title"></h1>
+      <span data-i18n="orders_panel"></span>
+    </div>
+
+    <div class="chef-filter">
+      <label data-i18n="chef_label"></label>
+      <select id="chefFilter">
+        <option value="all" data-i18n="all_items"></option>
+      </select>
+    </div>
+
+    <div class="chef-filters">
+      <select id="categoryFilter">
+        <option value="all" data-i18n="all_categories"></option>
+      </select>
+
+      <select id="subFilter">
+        <option value="all" data-i18n="all_subcategories"></option>
+      </select>
+    </div>
+
+    <div class="stats-toggle-container">
+      <button class="btn-stats-toggle" onclick="toggleStatsPanel()" data-i18n-title="stats_title" type="button">
+        📊 <span id="myActiveCount">0</span>
+      </button>
+
+      <div id="statsPanel" class="stats-panel" style="display: none;">
+        <div class="stats-header">
+          <h3 data-i18n="stats_title">📊 Statistika</h3>
+          <button onclick="toggleStatsPanel()" class="btn-close" type="button">✖</button>
+        </div>
+
+        <div class="my-stats-section">
+          <h4 data-i18n="my_stats_title">👨‍🍳 Mening statistikam</h4>
+
+          <div class="stat-row">
+            <span class="stat-label" data-i18n="stats_active_orders">🔥 Faol buyurtmalar:</span>
+            <span class="stat-value" id="statMyActive">0</span>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-label" data-i18n="stats_fast_orders">⚡ Tez buyurtmalar:</span>
+            <span class="stat-value" id="statMyFast">0</span>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-label" data-i18n="stats_normal_orders">🟢 Oddiy buyurtmalar:</span>
+            <span class="stat-value" id="statMyNormal">0</span>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-label" data-i18n="stats_ready_orders">✅ Tayyor buyurtmalar:</span>
+            <span class="stat-value" id="statMyReady">0</span>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-label" data-i18n="stats_work_time">⏱ Jami ketgan vaqt:</span>
+            <span class="stat-value" id="statMyWorkTime">0 min</span>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-label" data-i18n="stats_total_orders">📦 Jami buyurtmalar:</span>
+            <span class="stat-value" id="statMyTotal">0</span>
+          </div>
+        </div>
+
+        <div class="all-chefs-stats" id="allChefsStats">
+          <h4 data-i18n="all_chefs_title">🧑‍🍳 Barcha oshpazlar</h4>
+
+          <div class="stats-legend">
+            <div class="legend-item" data-i18n="stats_active_short">🔥 Faol</div>
+            <div class="legend-item" data-i18n="stats_fast_short">⚡ Tez</div>
+            <div class="legend-item" data-i18n="stats_normal_short">🟢 Oddiy</div>
+            <div class="legend-item" data-i18n="stats_ready_short">✅ Tayyor</div>
+            <div class="legend-item" data-i18n="stats_time_short">⏱ Vaqt</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn" onclick="toggleFullscreen()" data-i18n="fullscreen_btn" type="button"></button>
+      <button class="btn" onclick="toggleTVMode()" data-i18n="tv_mode_btn" type="button"></button>
+
+      <select id="langSelect" class="lang-select">
+        <option value="uz">UZ</option>
+        <option value="ru">RU</option>
+        <option value="en">EN</option>
+      </select>
+
+      <span id="newOrdersBadge" class="badge" style="display: none;">0</span>
+    </div>
+
+      <div id="chefSettingsBlock"
+      style="display:none; background: #fff3cd; padding: 10px 20px; border-radius: 8px; gap: 20px; align-items: center; margin-bottom: 15px; border: 1px solid #ffe69c;">
+      <b data-i18n="kitchen_management">👨‍🍳 Oshxona boshqaruvi:</b>
+      <label>
+        <span data-i18n="normal_time_mins">Odatiy vaqt:</span>
+        <input type="number" id="chefSetNormalTime"
+          style="width: 60px; padding: 5px; border-radius: 5px; border:1px solid #ccc;"
+          onchange="updateGlobalChefTime(this.value)"> <span data-i18n="minute_short">min</span>
+      </label>
+      <label id="chefFastToggleLabel"
+        style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" id="chefToggleFastOrder" onchange="toggleGlobalFastOrder(this.checked)"
+          style="width:18px; height:18px;">
+        <span data-i18n="fast_order_active_toggle">⚡ Tezkor xizmatni yoqish</span>
+      </label>
+    </div>
+
+    <div
+      style="background: #fff3cd; padding: 10px 20px; border-radius: 8px; display: flex; gap: 20px; align-items: center; margin-bottom: 15px; border: 1px solid #ffe69c;">
+      <b data-i18n="kitchen_management">👨‍🍳 Oshxona boshqaruvi:</b>
+      <label data-i18n="normal_time_label">Odatiy vaqt:
+        <input type="number" id="chefSetNormalTime"
+          style="width: 60px; padding: 5px; border-radius: 5px; border:1px solid #ccc;"
+          onchange="updateGlobalChefTime(this.value)"> min
+      </label>
+      <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" id="chefToggleFastOrder" onchange="toggleGlobalFastOrder(this.checked)"
+          style="width:18px; height:18px;">
+        <span data-i18n="fast_order_active_toggle">⚡ Tezkor xizmatni yoqish/o'chirish</span>
+      </label>
+    </div>
+  </header>
+
+  <div id="chefsTodayStats" class="chefs-today-stats"></div>
+
+  <div id="chefStatsBox" class="chef-stats-box"></div>
+
+  <main class="container">
+    <section class="orders-section">
+      <h2 data-i18n="active_orders_title"></h2>
+      <div id="chefOrders" class="orders-grid"></div>
+    </section>
+
+    <section class="orders-section ready-section">
+      <h2 data-i18n="ready_orders_title"></h2>
+      <div id="readyOrders" class="orders-grid"></div>
+    </section>
+  </main>
+  <div id="notification" class="notification"></div>
+
+  <script src="js/langs.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script type="module" src="js/chef.js"></script>
+  <script type="module" src="js/shared.js"></script>
+</body>
+
+</html>

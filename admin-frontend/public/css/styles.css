@@ -1,0 +1,239 @@
+:root {
+  --orange: #F7931E;
+  --orange-dark: #E57C00;
+  --dark: #2F3439;
+  --bg: #F4F6F8;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+  --muted: #6B7280;
+  --radius: 18px;
+  --shadow: 0 10px 26px rgba(0,0,0,.06);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--dark);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--card);
+  border-bottom: 2px solid rgba(247,147,30,.2);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--dark);
+}
+
+.filters select {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.table-box {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.table-box input {
+  width: 70px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.table-box button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  background: var(--orange);
+  color: #fff;
+  cursor: pointer;
+}
+
+.container {
+  padding: 18px;
+}
+
+.section-title {
+  margin-bottom: 14px;
+  color: var(--dark);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.menu-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: .2s;
+}
+
+.menu-card:hover {
+  transform: translateY(-3px);
+}
+
+.menu-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.menu-card .info {
+  padding: 12px;
+}
+
+.menu-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.menu-card p {
+  color: var(--orange);
+  font-weight: 800;
+}
+
+.qty {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.qty button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  font-size: 18px;
+  background: var(--orange);
+  color: #fff;
+  cursor: pointer;
+}
+
+.qty span {
+  font-weight: 700;
+}
+
+.cart-icon {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(247,147,30,.45);
+}
+
+.cart-icon span {
+  background: #fff;
+  color: var(--orange);
+  border-radius: 50%;
+  padding: 2px 8px;
+  margin-left: 6px;
+}
+
+.cart-modal {
+  position: fixed;
+  right: 18px;
+  bottom: 80px;
+  width: 340px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: none;
+}
+
+.cart-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cart-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.cart-info p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.remove-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.cart-footer button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 14px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+  color: #fff;
+}
+
+.btn.secondary {
+  background: #ECECEC;
+}
+
+.order-status-box {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  background: var(--card);
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  font-weight: 700;
+}
+
+.status-Yangi { border-left: 6px solid #94A3B8; }
+.status-Tayyorlanmoqda { border-left: 6px solid #F59E0B; }
+.status-Tayyor { border-left: 6px solid var(--orange); }
+.status-Yetkazilmoqda { border-left: 6px solid #3B82F6; }
+.status-Yetkazildi { border-left: 6px solid #22C55E; }

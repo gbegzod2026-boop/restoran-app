@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="uz">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Foodify — Ofitsiant Dashboard</title>
+  <link rel="stylesheet" href="css/waiter.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="js/waiter.js"></script>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <img src="img/logo.png" alt="Foodify">
+      <h1>
+        Foodify — Ofitsiant
+        <span id="newBadge" class="badge hidden">NEW</span>
+      </h1>
+    </div>
+    <div class="header-actions">
+      <button onclick="location.href='profile.html'" class="btn-profile">👤 Profil</button>
+      <button onclick="logout()" class="btn-logout">🚪 Chiqish</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+
+    <!-- LEFT SIDEBAR: ALERTS -->
+    <aside class="sidebar">
+
+      <!-- Waiter Calls -->
+      <div class="card alert-section">
+        <h2>🛎 Mijoz Chaqiruvlari</h2>
+        <div id="waiterCalls" class="calls-container">
+          <p class="empty-state">Hozircha chaqiruvlar yo'q</p>
+        </div>
+      </div>
+
+      <!-- Cleaning Alerts -->
+      <div class="card alert-section">
+        <h2>🧼 Tozalash Signallari</h2>
+        <div id="cleaningAlerts" class="cleaning-container">
+          <p class="empty-state">Tozalash kerak stollar yo'q</p>
+        </div>
+      </div>
+
+      <!-- Stock Alerts -->
+      <div class="card alert-section">
+        <h2>⚠️ Zaxira Ogohlantirishlari</h2>
+        <div id="stockAlerts" class="alerts-container">
+          <p class="empty-state">Ogohlantirishlar yo'q</p>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h4>📦 Bugun yetkazildi</h4>
+          <b id="statTodayDelivered">0</b>
+        </div>
+        <div class="stat-card">
+          <h4>📊 Jami yetkazildi</h4>
+          <b id="statTotalDelivered">0</b>
+        </div>
+        <div class="stat-card">
+          <h4>💰 Bugungi tushum</h4>
+          <b id="statTodayRevenue">0 so'm</b>
+        </div>
+        <div class="stat-card">
+          <h4>📈 O'rtacha buyurtma</h4>
+          <b id="statAvgOrder">0 so'm</b>
+        </div>
+        <div class="stat-card">
+          <h4>🪑 Qaralgan stollar</h4>
+          <b id="statTables">0</b>
+        </div>
+        <div class="stat-card highlight">
+          <h4>🎁 Sodiqlik mijozlar</h4>
+          <b id="statLoyalCustomers">0</b>
+        </div>
+        <div class="stat-card">
+          <h4>🟡 Active Tables</h4>
+          <b id="statActiveTables">0</b>
+        </div>
+
+        <div class="stat-card">
+          <h4>🍽 Ready to Serve</h4>
+          <b id="statReadyToServe">0</b>
+        </div>
+
+        <div class="stat-card">
+          <h4>💳 Bills Pending</h4>
+          <b id="statBillsPending">0</b>
+        </div>
+
+        <div class="stat-card">
+          <h4>✅ Served Today</h4>
+          <b id="statServedTodayExtra">0</b>
+        </div>
+
+        <div class="stat-card highlight">
+          <h4>💓 Service Pulse</h4>
+          <b id="statServicePulse">🟢 Sokin</b>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-wrapper card">
+        <h3>📊 Buyurtmalar statistikasi</h3>
+        <canvas id="waiterChart"></canvas>
+
+        <!-- Payment Requests -->
+        <div class="card" style="margin-top:18px">
+          <h2>💳 Payment Requests</h2>
+          <div id="paymentRequests" class="orders-grid compact">
+            <p class="empty-state">Payment requestlar yo'q</p>
+          </div>
+        </div>
+
+        <!-- Live Tables -->
+        <div class="card" style="margin-top:18px">
+          <h2>🪑 Live Tables</h2>
+          <div id="liveTablesGrid" class="orders-grid">
+            <p class="empty-state">Stollar yuklanmoqda...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Section -->
+      <div class="orders-section">
+
+        <!-- Ready Orders -->
+        <div class="card">
+          <h2>🍽 Tayyor buyurtmalar</h2>
+          <div id="readyOrders" class="orders-grid">
+            <p class="empty-state">Tayyor buyurtmalar yo'q</p>
+          </div>
+        </div>
+
+        <!-- Delivered Orders -->
+        <div class="card" style="margin-top:18px">
+          <h2>✅ Yetkazilgan buyurtmalar</h2>
+          <div id="deliveredOrders" class="orders-grid compact">
+            <p class="empty-state">Yetkazilgan buyurtmalar yo'q</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script>
+    function logout() {
+      localStorage.clear();
+      location.href = "login.html";
+    }
+  </script>
+
+</body>
+
+</html>
