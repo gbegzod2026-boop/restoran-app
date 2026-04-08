@@ -5,7 +5,6 @@ export default function App(){
     <div>
       <header className="header">
         <h1>🍽 Foodify</h1>
-        test
       </header>
       <main style={{padding:20}}>
         <p>React ishga tushdi — index.js to‘g‘ri joylashgan.</p>
